@@ -23,6 +23,11 @@ public class User implements UserDetails {
     private String password;
     private String role;
 
+    // 추가 필드
+    private String email;       // 이메일 필드 추가
+    private String phone;       // 전화번호 필드 추가
+    private String confirmPassword; // 확인용 비밀번호 필드 추가
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         // 역할을 권한으로 변환하여 반환 (필요에 따라 수정)

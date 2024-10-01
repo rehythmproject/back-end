@@ -3,8 +3,6 @@ package com.example.redunm.controller;
 import com.example.redunm.model.User;
 import com.example.redunm.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -19,12 +17,13 @@ public class UserController {
     private UserService userService;
 
     @GetMapping("/signup") // 회원가입 페이지로 이동
-    public String signupForm() {
+    public String signupForm(Model model) {
+        model.addAttribute("user", new User()); // 폼에서 사용할 빈 User 객체 추가
         return "signup"; // templates 폴더의 signup.html로 연결
     }
 
     @PostMapping("/signup")
-    public String signup(@ModelAttribute User user, Model model) {
+    public String signup(@ModelAttribute("user") User user, Model model) {
         if (userService.findByUsername(user.getUsername()).isPresent()) {
             model.addAttribute("error", "Username is already taken");
             return "signup"; // 오류 메시지를 가진 채로 다시 signup 페이지로 이동
@@ -36,12 +35,13 @@ public class UserController {
     }
 
     @GetMapping("/login") // 로그인 페이지로 이동
-    public String loginForm() {
+    public String loginForm(Model model) {
+        model.addAttribute("user", new User()); // 폼에서 사용할 빈 User 객체 추가
         return "login"; // templates 폴더의 login.html로 연결
     }
 
     @PostMapping("/login")
-    public String login(@ModelAttribute User user, Model model) {
+    public String login(@ModelAttribute("user") User user, Model model) {
         Optional<User> existingUser = userService.findByUsername(user.getUsername());
         if (existingUser.isPresent() &&
                 existingUser.get().getPassword().equals(user.getPassword())) {
