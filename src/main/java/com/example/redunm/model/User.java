@@ -1,56 +1,65 @@
 package com.example.redunm.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Collection;
-import java.util.Collections;
-
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-@Document(collection = "users")
-public class User implements UserDetails {
+@Document(collection = "users")  // MongoDB의 컬렉션 지정
+public class User {
 
     @Id
-    private String id;
+    private String id;  // MongoDB에서 사용하는 ID 필드
+
     private String username;
     private String password;
-    private String role;
+    private String email;
+    private String phone;
+    private String confirmPassword;
 
-    // 추가 필드
-    private String email;       // 이메일 필드 추가
-    private String phone;       // 전화번호 필드 추가
-    private String confirmPassword; // 확인용 비밀번호 필드 추가
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        // 역할을 권한으로 변환하여 반환 (필요에 따라 수정)
-        return Collections.emptyList(); // 권한이 없으면 빈 리스트 반환
+    // Getters and Setters
+    public String getId() {
+        return id;
     }
 
-    @Override
-    public boolean isAccountNonExpired() {
-        return true; // 계정 만료 여부
+    public void setId(String id) {
+        this.id = id;
     }
 
-    @Override
-    public boolean isAccountNonLocked() {
-        return true; // 계정 잠김 여부
+    public String getUsername() {
+        return username;
     }
 
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true; // 자격 증명 만료 여부
+    public void setUsername(String username) {
+        this.username = username;
     }
 
-    @Override
-    public boolean isEnabled() {
-        return true; // 계정 활성화 여부
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+    public String getConfirmPassword() {
+        return confirmPassword;
+    }
+
+    public void setConfirmPassword(String confirmPassword) {
+        this.confirmPassword = confirmPassword;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 }

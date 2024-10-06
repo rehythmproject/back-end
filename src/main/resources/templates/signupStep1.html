@@ -1,0 +1,6 @@
+<form action="/auth/signup/step1" method="post">
+    <label>아이디 :</label>
+    <input type="text" name="username" required>
+    <button type="submit">다음</button>
+    <p th:text="${error}" style="color:red;"></p>
+</form>

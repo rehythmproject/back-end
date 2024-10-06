@@ -1,0 +1,8 @@
+<form action="/auth/signup/step2" method="post">
+  <label>비밀번호 입력</label>
+  <input type="password" name="password" required>
+  <label>비밀번호 확인</label>
+  <input type="password" name="confirmPassword" required>
+  <button type="submit"></button>
+  <p th:text="${error}" style="color: red"></p>
+</form>
