@@ -30,7 +30,7 @@ public class Step4Controller {
 
         // 전화번호 중복 확인
         if (userService.findByPhone(user.getPhone()).isPresent()) {
-            model.addAttribute("error", "전화번호가 이미 사용 중입니다.");
+            model.addAttribute("error", "이 전화번호는 이미 사용되어 있습니다.");
             return "signupStep4";
         }
 
