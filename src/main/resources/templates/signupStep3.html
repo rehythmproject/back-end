@@ -1,5 +1,9 @@
 <form action="/auth/signup/step3" method="post">
     <label>이메일:</label>
-    <input type="email" name="email" required>
+    <input type="email" name="email" value="${user.email}" required>
+
+    <!-- 오류 메시지를 빨간색으로 표시 -->
+    <p th:if="${error}" th:text="${error}" style="color: red;"></p>
+
     <button type="submit">다음</button>
 </form>

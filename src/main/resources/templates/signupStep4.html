@@ -1,5 +1,6 @@
 <form action="/auth/signup/step4" method="post">
-  <label>전화번호:</label>
-  <input type="text" name="phone" required>
-  <button type="submit">회원가입 완료</button>
+      <label>전화번호 :</label>
+      <input type="text" name="phone" value="${user.phone}" required>
+      <p th:if="error" th:text="${error}" style="color: red;"></p>
+      <button type="submit">회원가입 완료</button>
 </form>
