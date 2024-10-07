@@ -41,6 +41,6 @@ public class Step4Controller {
         // 모든 정보 저장 완료 후, MongoDB에 저장
         userService.save(sessionUser);
         session.removeAttribute("user");
-        return "redirect:/auth/login";
+        return "redirect:/auth/signup/success";
     }
 }
