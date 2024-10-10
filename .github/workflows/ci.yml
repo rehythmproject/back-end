@@ -14,7 +14,7 @@ jobs:
 
     services:
       mongodb:
-        image: mongo
+        image: mongo:latest
         ports:
           - 27017:27017
         options: >-
@@ -33,6 +33,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: '21'
+          distribution: 'temurin'  # Java 배포 유형을 명시
 
       # Cache Gradle dependencies to speed up build time
       - name: Cache Gradle packages
