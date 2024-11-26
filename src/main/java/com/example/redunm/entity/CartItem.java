@@ -1,21 +1,30 @@
 package com.example.redunm.entity;
 
-import com.example.redunm.dto.AddModel;
-
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-
 public class CartItem {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String modelId;  // 모델 ID
+    private String name;     // 모델 이름
+    private int price;       // 가격
+    private int quantity;    // 수량
 
-    @ManyToOne
-    private Cart cart;
+    public CartItem() {}
 
-    @ManyToOne
-    private AddModel item;
-    private int quantity;
+    public CartItem(String modelId, String name, int price, int quantity) {
+        this.modelId = modelId;
+        this.name = name;
+        this.price = price;
+        this.quantity = quantity;
+    }
+
+    // Getter & Setter
+    public String getModelId() { return modelId; }
+    public void setModelId(String modelId) { this.modelId = modelId; }
+
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+
+    public int getPrice() { return price; }
+    public void setPrice(int price) { this.price = price; }
+
+    public int getQuantity() { return quantity; }
+    public void setQuantity(int quantity) { this.quantity = quantity; }
 }
