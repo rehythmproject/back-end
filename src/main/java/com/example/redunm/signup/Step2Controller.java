@@ -1,4 +1,4 @@
-package com.example.redunm.controller;
+package com.example.redunm.signup;
 
 import com.example.redunm.model.User;
 import jakarta.servlet.http.HttpSession;

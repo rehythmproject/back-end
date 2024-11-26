@@ -1,4 +1,4 @@
-package com.example.redunm.controller;
+package com.example.redunm.signup;
 
 import com.example.redunm.model.User;
 import com.example.redunm.service.UserService;
@@ -25,7 +25,7 @@ public class Step4Controller {
         if (sessionUser == null) {
             return ResponseEntity.status(400).body("Session expired. Please start from Step 1.");
         }
-
+//일단 주석 처리 한다
         return ResponseEntity.ok(sessionUser); // 세션에 저장된 사용자 정보 반환
     }
 
