@@ -1,19 +1,17 @@
-version: '3'
+version: '3.8'
 services:
   mongodb:
-    image: mongo
+    image: mongo:latest
     container_name: mongodb
     ports:
       - "27017:27017"
-    volumes:
-      - ./mongodbdata:/data/db
 
-  app:
-    build: .
+  redunm-app:
+    image: kimyujindoj/redunm-app
     container_name: redunm-app
+    depends_on:
+      - mongodb
     ports:
       - "8080:8080"
     environment:
       SPRING_DATA_MONGODB_URI: mongodb://mongodb:27017/mydatabase
-    depends_on:
-      - mongodb

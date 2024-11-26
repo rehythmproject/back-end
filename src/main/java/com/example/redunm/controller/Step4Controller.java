@@ -3,44 +3,57 @@ package com.example.redunm.controller;
 import com.example.redunm.model.User;
 import com.example.redunm.service.UserService;
 import jakarta.servlet.http.HttpSession;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@Controller
-@RequestMapping("/auth/signup/step4")
+@RestController // @Controller 대신 @RestController 사용
+@RequestMapping("/api/auth/signup/step4")
 public class Step4Controller {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
 
-    @GetMapping
-    public String signupStep4Form(HttpSession session, Model model) {
-        User user = (User) session.getAttribute("user");
-        if (user == null) {
-            return "redirect:/auth/signup/step1";
-        }
-        model.addAttribute("user", user);
-        return "signupStep4";
+    private static final String SESSION_USER_KEY = "user"; // 세션 키 상수 정의
+
+    public Step4Controller(UserService userService) {
+        this.userService = userService;
     }
 
+    // GET: Step 4 데이터 가져오기
+    @GetMapping
+    public ResponseEntity<?> getSignupStep4Data(HttpSession session) {
+        User sessionUser = (User) session.getAttribute(SESSION_USER_KEY);
+        if (sessionUser == null) {
+            return ResponseEntity.status(400).body("Session expired. Please start from Step 1.");
+        }
+
+        return ResponseEntity.ok(sessionUser); // 세션에 저장된 사용자 정보 반환
+    }
+
+    // POST: Step 4 데이터 처리
     @PostMapping
-    public String signupStep4(@ModelAttribute("user") User user, Model model, HttpSession session) {
+    public ResponseEntity<?> processSignupStep4(
+            @RequestBody User user, // 클라이언트에서 JSON으로 데이터 받음
+            HttpSession session
+    ) {
+        User sessionUser = (User) session.getAttribute(SESSION_USER_KEY);
+        if (sessionUser == null) {
+            return ResponseEntity.status(400).body("Session expired. Please start from Step 1.");
+        }
 
         // 전화번호 중복 확인
         if (userService.findByPhone(user.getPhone()).isPresent()) {
-            model.addAttribute("error", "이 전화번호는 이미 사용되어 있습니다.");
-            return "signupStep4";
+            return ResponseEntity.status(400).body("This phone number is already in use.");
         }
 
         // 세션에 전화번호 저장
-        User sessionUser = (User) session.getAttribute("user");
         sessionUser.setPhone(user.getPhone());
 
-        // 모든 정보 저장 완료 후, MongoDB에 저장
+        // 사용자 정보 MongoDB에 저장
         userService.save(sessionUser);
-        session.removeAttribute("user");
-        return "redirect:/auth/signup/success";
+
+        // 세션 정리
+        session.removeAttribute(SESSION_USER_KEY);
+
+        return ResponseEntity.ok("Signup completed successfully.");
     }
 }

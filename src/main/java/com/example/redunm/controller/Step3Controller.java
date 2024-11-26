@@ -3,45 +3,52 @@ package com.example.redunm.controller;
 import com.example.redunm.model.User;
 import com.example.redunm.service.UserService;
 import jakarta.servlet.http.HttpSession;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@Controller
-@RequestMapping("/auth/signup/step3")
+@RestController // @Controller 대신 @RestController 사용
+@RequestMapping("/api/auth/signup/step3")
 public class Step3Controller {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
 
-    @GetMapping
-    public String signupStep3Form(HttpSession session, Model model) {
-        User user = (User) session.getAttribute("user");
-        if (user == null) {
-            return "redirect:/auth/signup/step1";
-        }
-        model.addAttribute("user", user);
-        return "signupStep3";
+    private static final String SESSION_USER_KEY = "user"; // 세션 키 상수 정의
+
+    public Step3Controller(UserService userService) {
+        this.userService = userService;
     }
 
-    @PostMapping
-    public String signupStep3(@ModelAttribute("user") User user, Model model, HttpSession session) {
-        User sessionUser = (User) session.getAttribute("user");
+    // GET: Step 3 데이터 가져오기
+    @GetMapping
+    public ResponseEntity<?> getSignupStep3Data(HttpSession session) {
+        User sessionUser = (User) session.getAttribute(SESSION_USER_KEY);
         if (sessionUser == null) {
-            return "redirect:/auth/signup/step1";
+            return ResponseEntity.status(400).body("Session expired. Please start from Step 1.");
+        }
+
+        return ResponseEntity.ok(sessionUser); // 세션에 저장된 사용자 정보 반환
+    }
+
+    // POST: Step 3 데이터 처리
+    @PostMapping
+    public ResponseEntity<?> processSignupStep3(
+            @RequestBody User user, // 클라이언트에서 JSON으로 데이터 받음
+            HttpSession session
+    ) {
+        User sessionUser = (User) session.getAttribute(SESSION_USER_KEY);
+        if (sessionUser == null) {
+            return ResponseEntity.status(400).body("Session expired. Please start from Step 1.");
         }
 
         // 이메일 중복 확인
         if (userService.findByEmail(user.getEmail()).isPresent()) {
-            model.addAttribute("error", "이메일이 이미 사용 중입니다.");
-            return "signupStep3";
+            return ResponseEntity.status(400).body("The email is already in use.");
         }
 
         // 세션에 이메일 저장
         sessionUser.setEmail(user.getEmail());
-        session.setAttribute("user", sessionUser);
+        session.setAttribute(SESSION_USER_KEY, sessionUser);
 
-        return "redirect:/auth/signup/step4";
+        return ResponseEntity.ok("Step 3 completed successfully. Proceed to Step 4.");
     }
 }

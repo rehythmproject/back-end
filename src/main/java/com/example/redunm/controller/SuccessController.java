@@ -1,20 +1,17 @@
 package com.example.redunm.controller;
 
-import com.example.redunm.model.User;
-import com.example.redunm.service.UserService;
-import jakarta.servlet.http.HttpSession;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
-@RequestMapping("/auth/signup/success")
+@RestController
+@RequestMapping("/api/auth/signup/success")
 public class SuccessController {
 
     @GetMapping
-    public String success(Model model){
-        model.addAttribute("message", "회원가입이 성공적으로 완료 되었습니다.");
-        return "signupSuccess";
+    public ResponseEntity<?> success() {
+        // 성공 메시지를 JSON 형태로 반환
+        return ResponseEntity.ok("Signup successful");
     }
 }
