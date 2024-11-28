@@ -4,6 +4,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.math.BigDecimal;
+
 @Getter
 @Setter
 @ToString
@@ -15,7 +17,7 @@ public class KakaoApproveResponse {
     private String partner_order_id; // 가맹점 주문 번호
     private String partner_user_id; // 가맹점 회원 id
     private String payment_method_type; // 결제 수단
-    private int amount; // 결제 금액 정보
+    private BigDecimal amount; // 결제 금액 정보
     private String item_name; // 상품명
     private String item_code; // 상품 코드
     private int quantity; // 상품 수량
