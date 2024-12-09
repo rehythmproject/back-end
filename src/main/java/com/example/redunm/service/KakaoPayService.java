@@ -2,6 +2,8 @@ package com.example.redunm.service;
 
 import com.example.redunm.dto.ApproveResponse;
 import com.example.redunm.dto.ReadyResponse;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -10,17 +12,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
 @Slf4j
 @Service
 public class KakaoPayService {
-    @Value("${kakao.api.key}")
+    @Value("$kakao_api_key")
     private String apiKey;
 
-    // 카카오페이 결제창 연결
-    public ReadyResponse payReady(String name, int totalPrice) {
+    public ReadyResponse payReady(String name, @Min(value = 1, message = "총 가격은 0보다 큰 값이어야 합니다.") @Max(value = 10000000, message = "총 가격이 허용된 범위를 초과함") BigDecimal totalPrice) {
 
         Map<String, String> parameters = new HashMap<>();
         parameters.put("cid", "TC0ONETIME");                                    // 가맹점 코드(테스트용)

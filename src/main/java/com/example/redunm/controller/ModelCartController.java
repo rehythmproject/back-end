@@ -7,12 +7,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/cart")
+@RequestMapping("/api/modelcart")
 public class ModelCartController {
 
     private final List<CartItem> cart = new ArrayList<>();
 
-    // 장바구니 항목 추가 하는 기능
     @PostMapping("/add")
     public List<CartItem> addToCart(@RequestBody CartItem item) {
         for (CartItem cartItem : cart) {
