@@ -51,4 +51,4 @@ tasks.named('test') {
 tasks.withType(JavaCompile) {
 	options.encoding = 'UTF-8' // UTF-8 인코딩 설정
 	options.release = 17 // Java 17 사용 (21은 Kotlin 호환성 문제로 권장하지 않음)
-}
+
