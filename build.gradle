@@ -8,13 +8,11 @@ group = 'com.example'
 version = '0.0.1-SNAPSHOT'
 
 repositories {
-	mavenCentral() // Maven Central 저장소
+	mavenCentral()
 	maven { url 'https://jitpack.io' }
 }
 
 dependencies {
-
-	implementation 'io.github.cdimascio:java-dotenv:5.3.1'
 	// Spring Boot Core Dependencies
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
@@ -22,12 +20,10 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 
-	// Validation
-	implementation 'org.springframework.boot:spring-boot-starter-validation'
-
 	// Utility Dependencies
-	implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.2' // JSON 처리
-	implementation 'org.apache.httpcomponents:httpclient:4.5.13' // HTTP 요청
+	implementation 'io.github.cdimascio:java-dotenv:5.3.1'
+	implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.2'
+	implementation 'org.apache.httpcomponents:httpclient:4.5.13'
 
 	// Thymeleaf Spring Security Extras
 	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
@@ -45,10 +41,10 @@ dependencies {
 }
 
 tasks.named('test') {
-	useJUnitPlatform() // JUnit Platform 사용
+	useJUnitPlatform()
 }
 
 tasks.withType(JavaCompile) {
-	options.encoding = 'UTF-8' // UTF-8 인코딩 설정
-	options.release = 17 // Java 17 사용 (21은 Kotlin 호환성 문제로 권장하지 않음)
+	options.encoding = 'UTF-8'
+	options.release = 21 // Java 21 사용
 }
