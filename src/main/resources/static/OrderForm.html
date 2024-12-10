@@ -9,16 +9,17 @@
 </head>
 <body>
 <h1>카카오페이 결제 테스트</h1>
+<div id="error-message" class="alert alert-danger" style="display: none;"></div>
+<div id="loading-indicator" style="display: none;">결제 처리 중...</div>
 <button type="submit" id="btn-pay-ready">결제하기</button>
 
 <script type="text/javascript">
-  // 카카오페이 결제 팝업창 연결
   $(function() {
       $("#btn-pay-ready").click(function(e) {
           // 아래 데이터 외에도 필요한 데이터를 원하는 대로 담고, Controller에서 @RequestBody로 받으면 됨
           let data = {
-              name: '상품명',    // 카카오페이에 보낼 대표 상품명
-              totalPrice: 1 // 총 결제금액
+              name: '상품명',
+              totalPrice: 1 
           };
 
           $.ajax({

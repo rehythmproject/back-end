@@ -2,6 +2,8 @@ package com.example.redunm.service;
 
 import com.example.redunm.dto.ApproveResponse;
 import com.example.redunm.dto.ReadyResponse;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -10,17 +12,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
 @Slf4j
 @Service
 public class KakaoPayService {
-    @Value("${kakao.api.key}")
+    @Value("$kakao_api_key")
     private String apiKey;
 
-    // 카카오페이 결제창 연결
-    public ReadyResponse payReady(String name, int totalPrice) {
+    public ReadyResponse payReady(String name, @Min(value = 1, message = "총 가격은 0보다 큰 값이어야 합니다.") @Max(value = 10000000, message = "총 가격이 허용된 범위를 초과함") BigDecimal totalPrice) {
 
         Map<String, String> parameters = new HashMap<>();
         parameters.put("cid", "TC0ONETIME");                                    // 가맹점 코드(테스트용)
@@ -30,9 +32,9 @@ public class KakaoPayService {
         parameters.put("quantity", "1");                                        // 상품 수량
         parameters.put("total_amount", String.valueOf(totalPrice));             // 상품 총액
         parameters.put("tax_free_amount", "0");                                 // 상품 비과세 금액
-        parameters.put("approval_url", "http://localhost:8090/order/pay/completed"); // 결제 성공 시 URL
-        parameters.put("cancel_url", "http://localhost:8090/order/pay/cancel");      // 결제 취소 시 URL
-        parameters.put("fail_url", "http://localhost:8090/order/pay/fail");          // 결제 실패 시 URL
+        parameters.put("approval_url", "http://localhost:8080/order/pay/completed"); // 결제 성공 시 URL
+        parameters.put("cancel_url", "http://localhost:8080/order/pay/cancel");      // 결제 취소 시 URL
+        parameters.put("fail_url", "http://localhost:8080/order/pay/fail");          // 결제 실패 시 URL
 
         // HttpEntity : HTTP 요청 또는 응답에 해당하는 Http Header와 Http Body를 포함하는 클래스
         HttpEntity<Map<String, String>> requestEntity = new HttpEntity<>(parameters, this.getHeaders());
@@ -70,7 +72,6 @@ public class KakaoPayService {
         return approveResponse;
     }
 
-    // 카카오페이 측에 요청 시 헤더부에 필요한 값
     private HttpHeaders getHeaders() {
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "SECRET_KEY " + apiKey);
