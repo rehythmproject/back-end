@@ -20,6 +20,10 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 
+	// Validation Dependencies
+	implementation 'jakarta.validation:jakarta.validation-api:3.0.2'
+	implementation 'org.hibernate.validator:hibernate-validator:8.0.1.Final'
+
 	// Utility Dependencies
 	implementation 'io.github.cdimascio:java-dotenv:5.3.1'
 	implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.2'
@@ -39,6 +43,7 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
 }
+
 
 tasks.named('test') {
 	useJUnitPlatform()
