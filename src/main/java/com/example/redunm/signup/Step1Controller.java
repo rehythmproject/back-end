@@ -1,6 +1,6 @@
 package com.example.redunm.signup;
 
-import com.example.redunm.model.User;
+import com.example.redunm.entity.User;
 import com.example.redunm.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.http.ResponseEntity;
@@ -36,7 +36,7 @@ public class Step1Controller {
             @RequestBody User user, // 클라이언트에서 JSON 형태로 데이터를 받음
             HttpSession session
     ) {
-        // 아이디 중복 확인
+        //아이디 중복 처리 하는 부분
         if (userService.findByUsername(user.getUsername()).isPresent()) {
             return ResponseEntity.status(400).body("이미 존재하는 아이디입니다."); // 400 Bad Request와 메시지 반환
         }

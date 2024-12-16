@@ -1,6 +1,6 @@
 package com.example.redunm.signup;
 
-import com.example.redunm.model.User;
+import com.example.redunm.entity.User;
 import com.example.redunm.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.http.ResponseEntity;
