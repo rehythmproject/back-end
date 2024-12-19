@@ -11,7 +11,6 @@ public class DataModel {
     private String title;
     private String desc;
 
-    // Getters and Setters
     public String getId() {
         return id;
     }

@@ -1,46 +1,35 @@
 package com.example.redunm.signup;
-
 import com.example.redunm.entity.User;
 import jakarta.servlet.http.HttpSession;
-import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-@RestController // @Controller 대신 @RestController 사용
-@RequestMapping("/api/auth/signup/step2")
+@Controller
+@RequestMapping("/auth/signup/step2")
 public class Step2Controller {
 
-    private static final String SESSION_USER_KEY = "user"; // 세션 키 상수
-
-    // GET: Step 2 데이터 가져오기
     @GetMapping
-    public ResponseEntity<?> getStep2Data(HttpSession session) {
-        User user = (User) session.getAttribute(SESSION_USER_KEY);
+    public String signupStep2Form(HttpSession session, Model model) {
+        User user = (User) session.getAttribute("user");
         if (user == null) {
-            return ResponseEntity.status(400).body("Session expired. Please start from Step 1.");
+            return "redirect:/auth/signup/step1"; // 세션에 데이터가 없으면 첫 단계로 이동
         }
-        return ResponseEntity.ok(user); // 세션에 저장된 사용자 데이터를 JSON으로 반환
+        model.addAttribute("user", user);
+        return "signupStep2"; // 두 번째 단계 폼
     }
 
-    // POST: Step 2 데이터 처리
     @PostMapping
-    public ResponseEntity<?> processStep2(@RequestBody User user, HttpSession session) {
-        // 세션에서 기존 사용자 정보 가져오기
-        User sessionUser = (User) session.getAttribute(SESSION_USER_KEY);
-        if (sessionUser == null) {
-            return ResponseEntity.status(400).body("Session expired. Please start from Step 1.");
-        }
-
-        // 비밀번호 확인 로직
+    public String signupStep2(@ModelAttribute("user") User user, Model model, HttpSession session) {
         if (!user.getPassword().equals(user.getConfirmPassword())) {
-            return ResponseEntity.status(400).body("Passwords do not match.");
+            model.addAttribute("error", "비밀번호가 일치하지 않습니다.");
+            return "signupStep2";
         }
-
-        // 세션 사용자 정보 업데이트
+        // 세션에 비밀번호 저장하는 부분
+        User sessionUser = (User) session.getAttribute("user");
         sessionUser.setPassword(user.getPassword());
         sessionUser.setConfirmPassword(user.getConfirmPassword());
-        session.setAttribute(SESSION_USER_KEY, sessionUser);
-
-        // 성공적으로 처리된 경우
-        return ResponseEntity.ok("Step 2 completed successfully. Proceed to Step 3.");
+        session.setAttribute("user", sessionUser);
+        return "redirect:/auth/signup/step3";
     }
 }

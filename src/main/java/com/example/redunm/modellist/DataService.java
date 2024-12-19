@@ -13,6 +13,6 @@ public class DataService {
     }
 
     public List<DataModel> getAllModels() {
-        return dataRepository.findAll(); // MongoDB에서 모든 데이터 가져오기
+        return dataRepository.findAll();
     }
 }

@@ -19,8 +19,8 @@ public class DataController {
 
     @GetMapping
     public String getModelList(Model model) {
-        List<DataModel> models = dataService.getAllModels(); // 데이터 가져오기
+        List<DataModel> models = dataService.getAllModels();
         model.addAttribute("models", models);
-        return "modelList"; // Thymeleaf 템플릿(modelList.html) 반환
+        return "modelList";
     }
 }
