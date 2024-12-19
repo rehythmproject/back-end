@@ -37,3 +37,6 @@ out/
 .vscode/
 ### env파일제거
 .env
+
+### Spring Application Properties ###
+application.properties

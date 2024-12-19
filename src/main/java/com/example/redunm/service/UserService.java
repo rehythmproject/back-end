@@ -1,6 +1,6 @@
 package com.example.redunm.service;
 
-import com.example.redunm.model.User;
+import com.example.redunm.entity.User;
 import com.example.redunm.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;

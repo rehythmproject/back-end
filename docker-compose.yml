@@ -5,13 +5,13 @@ services:
     container_name: mongodb
     ports:
       - "27017:27017"
-
+#컨테이너 이름
   redunm-app:
-    image: kimyujindoj/redunm-app
+    image: redunm-app
     container_name: redunm-app
     depends_on:
       - mongodb
     ports:
       - "8080:8080"
     environment:
-      SPRING_DATA_MONGODB_URI: mongodb://mongodb:27017/mydatabase
+      SPRING_DATA_MONGODB_URI: mongodb://mongodb:27017/redunm

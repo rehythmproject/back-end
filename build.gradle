@@ -7,9 +7,14 @@ plugins {
 group = 'com.example'
 version = '0.0.1-SNAPSHOT'
 
+java {
+	sourceCompatibility = JavaVersion.VERSION_21
+	targetCompatibility = JavaVersion.VERSION_21
+}
+
 repositories {
+	maven { url 'https://jitpack.io' } // JitPack 저장소 추가
 	mavenCentral()
-	maven { url 'https://jitpack.io' }
 }
 
 dependencies {
@@ -20,14 +25,14 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 
+	implementation 'org.springframework.boot:spring-boot-starter-log4j2'
+
 	// Validation Dependencies
 	implementation 'jakarta.validation:jakarta.validation-api:3.0.2'
 	implementation 'org.hibernate.validator:hibernate-validator:8.0.1.Final'
 
 	// Utility Dependencies
-	implementation 'io.github.cdimascio:java-dotenv:5.3.1'
 	implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.2'
-	implementation 'org.apache.httpcomponents:httpclient:4.5.13'
 
 	// Thymeleaf Spring Security Extras
 	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
@@ -42,8 +47,13 @@ dependencies {
 	// Testing
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
-}
 
+	// Log4j2 Dependencies
+	implementation 'org.apache.logging.log4j:log4j-core:2.20.0'
+	implementation 'org.apache.logging.log4j:log4j-api:2.20.0'
+
+	// Exclude Spring Boot's Default Logging (SLF4J)
+}
 
 tasks.named('test') {
 	useJUnitPlatform()
@@ -51,5 +61,5 @@ tasks.named('test') {
 
 tasks.withType(JavaCompile) {
 	options.encoding = 'UTF-8'
-	options.release = 21 // Java 21 사용
+	options.release = 21
 }

@@ -1,6 +1,6 @@
 package com.example.redunm.repository;
 
-import com.example.redunm.model.User;
+import com.example.redunm.entity.User;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import java.util.Optional;
 

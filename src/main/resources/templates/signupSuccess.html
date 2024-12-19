@@ -2,9 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>회원가입 성공</title>
 </head>
 <body>
-  <h1>회원가입이 성공적으로 완료되었습니다.</h1>
+<h1>회원가입 성공</h1>
+<p th:text="${message}"></p>
+<a href="/auth/login">로그인 하러 가기</a>
 </body>
 </html>

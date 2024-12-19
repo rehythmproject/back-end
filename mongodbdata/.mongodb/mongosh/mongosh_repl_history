@@ -1,0 +1,15 @@
+show dbs
+show collections
+show config
+show dbs
+db.dataCollection.find().pretty()
+show collections
+show datacollection
+show collections
+db.dataCollection.insertMany([ { tag: '공부', title: 'barum', desc: '음성인식을 통해 외국어 발음 교정을 해줘요!' }, { tag: '회의', title: 'delLa', desc: '회의내용들을 분석해 회의 솔루션을 제공해요!' }, { tag: '회의', title: 'yoyak', desc: '긴 회의의 내용을 효율적으로 요약해줘요!' }, { tag: '업무', title: 'toron', desc: '토론 시 주제에 기반하는 근거자료들을 찾아줘요!' }, { tag: '업무', title: 'dobi', desc: '로드맵과 계획 날짜 등을 정리해줘요!' }, { tag: '회의', title: 'bigyo', desc: '회의의 문제점을 찾아 피드백을 제공해요!' }] )
+show collections
+use models
+show dbsb.dataCollection.insertMany([
+show collections
+use models
+show dbs

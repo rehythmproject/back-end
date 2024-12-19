@@ -4,7 +4,6 @@ import com.example.redunm.dto.ApproveResponse;
 import com.example.redunm.dto.ReadyResponse;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -16,7 +15,6 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
-@Slf4j
 @Service
 public class KakaoPayService {
     @Value("$kakao_api_key")
@@ -36,24 +34,17 @@ public class KakaoPayService {
         parameters.put("cancel_url", "http://localhost:8080/order/pay/cancel");      // 결제 취소 시 URL
         parameters.put("fail_url", "http://localhost:8080/order/pay/fail");          // 결제 실패 시 URL
 
-        // HttpEntity : HTTP 요청 또는 응답에 해당하는 Http Header와 Http Body를 포함하는 클래스
         HttpEntity<Map<String, String>> requestEntity = new HttpEntity<>(parameters, this.getHeaders());
 
-        // RestTemplate
-        // : Rest 방식 API를 호출할 수 있는 Spring 내장 클래스
-        //   REST API 호출 이후 응답을 받을 때까지 기다리는 동기 방식 (json, xml 응답)
         RestTemplate template = new RestTemplate();
         String url = "https://open-api.kakaopay.com/online/v1/payment/ready";
-        // RestTemplate의 postForEntity : POST 요청을 보내고 ResponseEntity로 결과를 반환받는 메소드
         ResponseEntity<ReadyResponse> responseEntity = template.postForEntity(url, requestEntity, ReadyResponse.class);
-        log.info("결제준비 응답객체: " + responseEntity.getBody());
+
+        System.out.println("결제준비 응답객체: " + responseEntity.getBody());
 
         return responseEntity.getBody();
     }
 
-    // 카카오페이 결제 승인
-    // 사용자가 결제 수단을 선택하고 비밀번호를 입력해 결제 인증을 완료한 뒤,
-    // 최종적으로 결제 완료 처리를 하는 단계
     public ApproveResponse payApprove(String tid, String pgToken) {
         Map<String, String> parameters = new HashMap<>();
         parameters.put("cid", "TC0ONETIME");              // 가맹점 코드(테스트용)
@@ -67,7 +58,8 @@ public class KakaoPayService {
         RestTemplate template = new RestTemplate();
         String url = "https://open-api.kakaopay.com/online/v1/payment/approve";
         ApproveResponse approveResponse = template.postForObject(url, requestEntity, ApproveResponse.class);
-        log.info("결제승인 응답객체: " + approveResponse);
+
+        System.out.println("결제승인 응답객체: " + approveResponse);
 
         return approveResponse;
     }
