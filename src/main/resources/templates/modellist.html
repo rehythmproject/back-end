@@ -9,17 +9,17 @@
     <thead>
     <tr>
         <th>ID</th>
+        <th>Name</th>
         <th>Tag</th>
-        <th>Title</th>
-        <th>Description</th>
+        <th>Price</th>
     </tr>
     </thead>
     <tbody>
     <tr th:each="model : ${models}">
         <td th:text="${model.id}">ID</td>
+        <td th:text="${model.name}">Name</td>
         <td th:text="${model.tag}">Tag</td>
-        <td th:text="${model.title}">Title</td>
-        <td th:text="${model.desc}">Description</td>
+        <td th:text="${model.price}">Price</td>
     </tr>
     </tbody>
 </table>

@@ -38,4 +38,5 @@ out/
 ### env파일제거
 .env
 
-.application.properties
+### Spring Application Properties ###
+application.properties

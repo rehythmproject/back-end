@@ -3,20 +3,39 @@ package com.example.redunm.modellist;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document(collection = "dataCollection")
+@Document(collection = "data_model") // MongoDB 컬렉션 이름
 public class DataModel {
-    @Id
-    private String id;
-    private String tag;
-    private String title;
-    private String desc;
 
+    @Id
+    private String id; // MongoDB에서 기본 키는 String 타입으로 설정
+
+    private String name;
+    private String tag;
+    private int price;
+
+    public DataModel() {}
+
+    public DataModel(String name, String tag, int price) {
+        this.name = name;
+        this.tag = tag;
+        this.price = price;
+    }
+
+    // Getters and Setters
     public String getId() {
         return id;
     }
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getTag() {
@@ -27,19 +46,11 @@ public class DataModel {
         this.tag = tag;
     }
 
-    public String getTitle() {
-        return title;
+    public int getPrice() {
+        return price;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getDesc() {
-        return desc;
-    }
-
-    public void setDesc(String desc) {
-        this.desc = desc;
+    public void setPrice(int price) {
+        this.price = price;
     }
 }
