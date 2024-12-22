@@ -6,9 +6,9 @@ import java.util.List;
 @Service
 public class DataService {
 
-    private final DataRepository dataRepository;
+    private final DataModelRepository dataRepository;
 
-    public DataService(DataRepository dataRepository) {
+    public DataService(DataModelRepository dataRepository) {
         this.dataRepository = dataRepository;
     }
 
