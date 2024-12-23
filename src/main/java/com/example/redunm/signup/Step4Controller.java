@@ -4,46 +4,50 @@ import com.example.redunm.entity.User;
 import com.example.redunm.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@Controller
-@RequestMapping("/auth/signup/step4")
+@RestController
+@RequestMapping("/api/auth/signup/step4")
 public class Step4Controller {
 
     @Autowired
     private UserService userService;
 
+
     @GetMapping
-    public String signupStep4Form(HttpSession session, Model model) {
+    public ResponseEntity<?> signupStep4Form(HttpSession session) {
         User user = (User) session.getAttribute("user");
         if (user == null) {
-            return "redirect:/auth/signup/step1"; // 세션이 없으면 Step1로 리다이렉트
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body("Step1 과정을 먼저 진행해야 합니다.");
         }
-        model.addAttribute("user", user);
-        return "signupStep4";
+        return ResponseEntity.ok(user);
     }
 
+
     @PostMapping
-    public String signupStep4(@ModelAttribute("user") User user, Model model, HttpSession session) {
-        // 전화번호 중복 확인
+    public ResponseEntity<?> signupStep4(@RequestBody User user, HttpSession session) {
+        User sessionUser = (User) session.getAttribute("user");
+        if (sessionUser == null) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body("Step1 과정을 먼저 진행해야 합니다.");
+        }
         if (userService.findByPhone(user.getPhone()).isPresent()) {
-            model.addAttribute("error", "전화번호가 이미 사용 중입니다.");
-            return "signupStep4";
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body("전화번호가 이미 사용 중입니다.");
         }
 
-        // 세션에 저장된 사용자 정보 업데이트
-        User sessionUser = (User) session.getAttribute("user");
         sessionUser.setPhone(user.getPhone());
 
-        // 사용자 정보 MongoDB에 저장
         userService.save(sessionUser);
 
-        // 세션에서 사용자 정보 제거
         session.removeAttribute("user");
 
-        // 회원가입 성공 페이지로 리다이렉트
-        return "redirect:/auth/signup/success";
+        return ResponseEntity.ok("회원가입이 완료되었습니다.");
     }
 }
