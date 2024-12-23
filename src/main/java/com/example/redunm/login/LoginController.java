@@ -4,54 +4,49 @@ import com.example.redunm.entity.User;
 import com.example.redunm.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@Controller
-@RequestMapping("/auth/login")
+import java.util.Map;
+
+@RestController
+@RequestMapping("/api/auth/login")
 public class LoginController {
 
     @Autowired
     private UserService userService;
 
-    @GetMapping
-    public String showLoginForm(Model model) {
-        return "login";
-    }
     @PostMapping
-    public String login(@RequestParam("username") String username,
-                        @RequestParam("password") String password,
-                        HttpSession session,
-                        Model model) {
+    public ResponseEntity<?> login(@RequestBody Map<String, String> requestBody,
+                                   HttpSession session) {
+        String username = requestBody.get("username");
+        String password = requestBody.get("password");
 
-        // 1. 사용자를 아이디로 검색
         var optionalUser = userService.findByUsername(username);
-
-        // 2. 존재 여부 확인
         if (optionalUser.isEmpty()) {
-            model.addAttribute("error", "존재하지 않는 아이디입니다.");
-            return "login";
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body("존재하지 않는 아이디입니다.");
         }
 
         User user = optionalUser.get();
 
-
         if (!user.getPassword().equals(password)) {
-            model.addAttribute("error", "비밀번호가 일치하지 않습니다.");
-            return "login";
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body("비밀번호가 일치하지 않습니다.");
         }
 
         session.setAttribute("loggedInUser", user);
 
-        return "redirect:/";
+        return ResponseEntity.ok("로그인 성공");
     }
 
-    // 로그아웃 처리
-    @PostMapping("/logout")
-    public String logout(HttpSession session) {
-        session.invalidate();
 
-        return "redirect:/auth/login";
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(HttpSession session) {
+        session.invalidate();
+        return ResponseEntity.ok("로그아웃 성공");
     }
 }
