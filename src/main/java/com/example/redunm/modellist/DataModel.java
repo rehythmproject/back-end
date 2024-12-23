@@ -3,12 +3,11 @@ package com.example.redunm.modellist;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document(collection = "data_model") // MongoDB 컬렉션 이름
+@Document(collection = "data_model")
 public class DataModel {
 
     @Id
-    private String id; // MongoDB에서 기본 키는 String 타입으로 설정
-
+    private String id;
     private String name;
     private String tag;
     private int price;
