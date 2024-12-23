@@ -24,5 +24,4 @@
 //            // 공부
 //            modelRepository.save(new DataModel("barum", "공부", 150));
 //        };
-//    }
-//}
+//
