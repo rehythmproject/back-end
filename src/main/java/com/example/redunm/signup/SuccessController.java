@@ -8,8 +8,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/auth/signup/success")
-public class SuccessC.
-ontroller {
+public class SuccessController {
 
     @GetMapping
     public ResponseEntity<?> success() {
