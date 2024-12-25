@@ -1,9 +1,10 @@
 package com.example.redunm.modellist;
 
+import com.example.redunm.modellist.ModelCartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.*;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/data-models")
@@ -12,14 +13,10 @@ public class DataModelCartController {
     @Autowired
     private DataModelRepository dataModelRepository;
 
-    /**
-     * [임시] 사용자별 장바구니 목록을 저장할 Map
-     *   - key: 사용자 ID (문자열)
-     *   - value: 해당 사용자가 장바구니에 담은 DataModel 리스트
-     */
-    private Map<String, List<DataModel>> userCartMap = new HashMap<>();
+    @Autowired
+    private ModelCartService cartService;  // 새로 만든 CartService
 
-    //모델 생성,삭제,추가,수정
+    // 1) DataModel 기본 CRUD
     @GetMapping
     public List<DataModel> getAll() {
         return dataModelRepository.findAll();
@@ -46,27 +43,37 @@ public class DataModelCartController {
         dataModelRepository.deleteById(id);
     }
 
-    //장바구니 기능
+    // 2) 장바구니 관련 API
     @PostMapping("/cart/{userId}/{modelId}")
     public List<DataModel> addToCart(@PathVariable String userId,
                                      @PathVariable String modelId) {
-        DataModel selectedModel = dataModelRepository.findById(modelId).orElse(null);
-        if (selectedModel == null) {
-            return Collections.emptyList();
+        // DB에서 modelId로 DataModel 조회
+        DataModel foundModel = dataModelRepository.findById(modelId).orElse(null);
+        if (foundModel == null) {
+            // 없는 모델이면 빈 목록 반환
+            return List.of();
         }
 
-        List<DataModel> cartList = userCartMap.getOrDefault(userId, new ArrayList<>());
-
-        cartList.add(selectedModel);
-
-        userCartMap.put(userId, cartList);
-
-        return cartList;
+        // CartService를 통해 장바구니에 추가
+        return cartService.addToCart(userId, foundModel);
     }
 
-   //장바구니 목록 조회
+    // (B) 특정 사용자의 장바구니 조회
     @GetMapping("/cart/{userId}")
     public List<DataModel> getCart(@PathVariable String userId) {
-        return userCartMap.getOrDefault(userId, Collections.emptyList());
+        return cartService.getCart(userId);
+    }
+
+    // (C) 장바구니 전체 비우기 (옵션)
+    @DeleteMapping("/cart/{userId}")
+    public void clearCart(@PathVariable String userId) {
+        cartService.clearCart(userId);
+    }
+
+    // (D) 장바구니에서 특정 모델 제거 (옵션)
+    @DeleteMapping("/cart/{userId}/{modelId}")
+    public List<DataModel> removeModelFromCart(@PathVariable String userId,
+                                               @PathVariable String modelId) {
+        return cartService.removeModel(userId, modelId);
     }
 }
