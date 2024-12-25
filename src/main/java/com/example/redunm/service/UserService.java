@@ -3,7 +3,6 @@ package com.example.redunm.service;
 import com.example.redunm.entity.User;
 import com.example.redunm.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -16,9 +15,9 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
-        this.passwordEncoder = new BCryptPasswordEncoder();
+        this.passwordEncoder = passwordEncoder;
     }
 
     public Optional<User> findByUsername(String username) {
@@ -32,6 +31,7 @@ public class UserService {
     public Optional<User> findByPhone(String phone) {
         return userRepository.findByPhone(phone);
     }
+
     public User save(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
@@ -39,14 +39,14 @@ public class UserService {
 
     public boolean isDuplicate(User user) {
         if (findByUsername(user.getUsername()).isPresent()) {
-            return true;  // 아이디 중복일 경우 true 반환
+            return true;
         }
         if (findByEmail(user.getEmail()).isPresent()) {
-            return true;  // 이메일 중복일 경우 true 반환
+            return true;
         }
         if (findByPhone(user.getPhone()).isPresent()) {
-            return true;  // 전화번호 중복일 경우 true 반환
+            return true;
         }
-        return false;  // 중복이 없으면 false 반환
+        return false;
     }
 }
