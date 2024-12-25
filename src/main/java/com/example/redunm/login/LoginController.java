@@ -43,6 +43,13 @@ public class LoginController {
         return ResponseEntity.ok("로그인 성공");
     }
 
+    //GET 추가
+    @GetMapping
+    public ResponseEntity<?> handleGetLogin() {
+        return ResponseEntity
+                .status(HttpStatus.METHOD_NOT_ALLOWED)
+                .body("GET 메서드는 /api/auth/login 엔드포인트에서 지원되지 않습니다. POST 메서드를 사용하세요.");
+    }
 
     @PostMapping("/logout")
     public ResponseEntity<?> logout(HttpSession session) {
