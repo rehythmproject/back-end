@@ -17,22 +17,30 @@ public class LoginController {
     @Autowired
     private UserService userService;
 
+    // POST 요청
     @PostMapping
     public ResponseEntity<?> login(@RequestBody Map<String, String> requestBody,
                                    HttpSession session) {
-        String username = requestBody.get("username");
-        String password = requestBody.get("password");
+        String email = requestBody.get("email");
+        String confirmPassword = requestBody.get("ConfirmPassword");
 
-        var optionalUser = userService.findByUsername(username);
+        // 이메일 또는 비밀번호가 null인 경우
+        if (email == null || confirmPassword == null) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body("이메일과 비밀번호를 모두 입력해주세요.");
+        }
+
+        var optionalUser = userService.findByEmail(email);
         if (optionalUser.isEmpty()) {
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
-                    .body("존재하지 않는 아이디입니다.");
+                    .body("존재하지 않는 이메일입니다.");
         }
 
         User user = optionalUser.get();
 
-        if (!user.getPassword().equals(password)) {
+        if (!user.getPassword().equals(confirmPassword)) {
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
                     .body("비밀번호가 일치하지 않습니다.");
@@ -43,7 +51,6 @@ public class LoginController {
         return ResponseEntity.ok("로그인 성공");
     }
 
-    //GET 추가
     @GetMapping
     public ResponseEntity<?> handleGetLogin() {
         return ResponseEntity
