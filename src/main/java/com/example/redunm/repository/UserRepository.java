@@ -2,9 +2,12 @@ package com.example.redunm.repository;
 
 import com.example.redunm.entity.User;
 import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.stereotype.Repository;
+
 import java.util.Optional;
 
-public interface UserRepository extends MongoRepository<User, String>{
+@Repository
+public interface UserRepository extends MongoRepository<User, String> {
     Optional<User> findByUsername(String username);
     Optional<User> findByEmail(String email);
     Optional<User> findByPhone(String phone);
