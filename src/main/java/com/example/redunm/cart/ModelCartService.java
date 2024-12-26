@@ -1,12 +1,9 @@
-package com.example.redunm.modellist;
+package com.example.redunm.cart;
 
-import com.example.redunm.entity.Cart;
+import com.example.redunm.modellist.DataModel;
+import com.example.redunm.modellist.DataModelRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ModelCartService {
@@ -17,43 +14,43 @@ public class ModelCartService {
     @Autowired
     private DataModelRepository dataModelRepository;
 
-    // 1. username과 name으로 장바구니에 아이템 추가
-    public Cart addToCartByUsernameAndModelName(String username, String name) {
-        Cart cart = cartRepository.findByUserId(username).orElse(new Cart(username));
+    // 장바구니에 아이템 추가 (tag 기준)
+    public Cart addToCartByUsernameAndTag(String username, String tag) {
+        Cart cart = cartRepository.findByUsername(username).orElse(new Cart(username));
 
-        DataModel dataModel = dataModelRepository.findByName(name)
-                .orElseThrow(() -> new IllegalArgumentException("Model not found: " + name));
+        DataModel dataModel = dataModelRepository.findByTag(tag)
+                .orElseThrow(() -> new IllegalArgumentException("Model not found: " + tag));
 
         cart.addItem(dataModel);
         return cartRepository.save(cart);
     }
 
-    // 2. username과 name으로 장바구니에서 특정 아이템 제거
-    public Cart removeItemByUsernameAndModelName(String username, String name) {
-        Cart cart = cartRepository.findByUserId(username)
+    // 장바구니에서 아이템 제거 (tag 기준)
+    public Cart removeItemByUsernameAndTag(String username, String tag) {
+        Cart cart = cartRepository.findByUsername(username)
                 .orElseThrow(() -> new IllegalArgumentException("Cart not found for username: " + username));
 
-        cart.removeItemByName(name);
+        cart.removeItemByTag(tag);
         return cartRepository.save(cart);
     }
 
-    // 3. username으로 장바구니의 총합 금액 계산
+    // 장바구니의 총합 금액 계산
     public double calculateTotalPriceByUsername(String username) {
-        Cart cart = cartRepository.findByUserId(username)
+        Cart cart = cartRepository.findByUsername(username)
                 .orElseThrow(() -> new IllegalArgumentException("Cart not found for username: " + username));
 
         return cart.calculateTotalPrice();
     }
 
-    // username기준으로 장바구니 조회
+    // 장바구니 조회
     public Cart getCartByUsername(String username) {
-        return cartRepository.findByUserId(username)
+        return cartRepository.findByUsername(username)
                 .orElse(new Cart(username));
     }
 
-    //장바구니 초기화
+    // 장바구니 초기화
     public void clearCartByUsername(String username) {
-        Cart cart = cartRepository.findByUserId(username)
+        Cart cart = cartRepository.findByUsername(username)
                 .orElseThrow(() -> new IllegalArgumentException("Cart not found for username: " + username));
 
         cart.getItems().clear();

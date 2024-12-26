@@ -20,28 +20,31 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)  // CSRF 비활성화
-
-                .cors(Customizer.withDefaults())
+                .cors(Customizer.withDefaults())        // 기본 CORS 설정
 
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
-                                "/api/auth/signup/**",  // 회원가입
-                                "/api/auth/login/**",// 로그인
-                                "api/cart/**",
-                                "/auth/signup/**",      // 추가적인 회원가입 경로
-                                "/api/data-models/**",
-                                "/css/**",
+                                "/api/auth/signup/**",  // 회원가입 관련 요청 허용
+                                "/api/auth/login/**",   // 로그인 관련 요청 허용
+                                "/api/cart/**",         // 장바구니 API 요청 허용
+                                "/api/data-models/**",  // 데이터 모델 API 요청 허용
+                                "/css/**",             // 정적 리소스 허용
                                 "/js/**",
                                 "/models/**"
                         ).permitAll()
-                        .anyRequest().authenticated()
+                        .anyRequest().authenticated()  // 그 외의 요청은 인증 필요
                 )
 
-                .formLogin(form -> form.disable())
+                .formLogin(form -> form
+                        .loginPage("/login")             // 커스텀 로그인 페이지
+                        .loginProcessingUrl("/api/auth/login") // 로그인 요청 URL
+                        .defaultSuccessUrl("/home", true) // 로그인 성공 후 이동 URL
+                        .permitAll()
+                )
 
                 .logout(logout -> logout
-                        .logoutUrl("/logout")
-                        .logoutSuccessUrl("/")
+                        .logoutUrl("/api/auth/logout")   // 로그아웃 URL
+                        .logoutSuccessUrl("/")           // 로그아웃 성공 후 이동 URL
                         .permitAll()
                 );
 

@@ -1,4 +1,4 @@
-package com.example.redunm.entity;
+package com.example.redunm.cart;
 
 import com.example.redunm.modellist.DataModel;
 import org.springframework.data.annotation.Id;
@@ -7,12 +7,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+
 @Document(collection = "cart")
 public class Cart {
 
     @Id
     private String id;
-    private String userId;
+    private String username; // 기존 userId -> username으로 변경
     private List<CartItem> items;
 
     // 기본 생성자
@@ -20,9 +21,9 @@ public class Cart {
         this.items = new ArrayList<>();
     }
 
-    // 사용자 ID를 포함하는 생성자
-    public Cart(String userId) {
-        this.userId = userId;
+    // username을 포함하는 생성자
+    public Cart(String username) {
+        this.username = username;
         this.items = new ArrayList<>();
     }
 
@@ -35,12 +36,12 @@ public class Cart {
         this.id = id;
     }
 
-    public String getUserId() {
-        return userId;
+    public String getUsername() {
+        return username; // userId -> username 변경
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setUsername(String username) { // userId -> username 변경
+        this.username = username;
     }
 
     public List<CartItem> getItems() {
@@ -54,7 +55,7 @@ public class Cart {
     // 장바구니에 아이템 추가
     public void addItem(DataModel dataModel) {
         for (CartItem item : items) {
-            if (item.getDataModel().getName().equals(dataModel.getName())) {
+            if (item.getDataModel().getTag().equals(dataModel.getTag())) { 
                 item.incrementQuantity();
                 return;
             }
@@ -62,9 +63,18 @@ public class Cart {
         items.add(new CartItem(dataModel));
     }
 
-    // 장바구니에서 아이템 제거 (name 기준)
-    public void removeItemByName(String name) {
-        items.removeIf(item -> item.getDataModel().getName().equals(name));
+
+    // 장바구니에서 아이템 제거 오류 고침
+    public void removeItemByTag(String tag) {
+        System.out.println("Before removal: " + items);
+        items.removeIf(item -> {
+            boolean toRemove = item.getDataModel().getTag().equals(tag);
+            if (toRemove) {
+                System.out.println("Removing item with tag: " + tag);
+            }
+            return toRemove;
+        });
+        System.out.println("After removal: " + items);
     }
 
     // 장바구니의 총합 금액 계산
@@ -80,12 +90,12 @@ public class Cart {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Cart cart = (Cart) o;
-        return Objects.equals(userId, cart.userId);
+        return Objects.equals(username, cart.username); // userId -> username 변경
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(userId);
+        return Objects.hash(username); // userId -> username 변경
     }
 
     // toString
@@ -93,7 +103,7 @@ public class Cart {
     public String toString() {
         return "Cart{" +
                 "id='" + id + '\'' +
-                ", userId='" + userId + '\'' +
+                ", username='" + username + '\'' +
                 ", items=" + items +
                 '}';
     }

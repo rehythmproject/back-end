@@ -1,4 +1,4 @@
-package com.example.redunm.entity;
+package com.example.redunm.cart;
 
 import com.example.redunm.modellist.DataModel;
 
