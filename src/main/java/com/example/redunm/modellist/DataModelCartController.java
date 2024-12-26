@@ -30,6 +30,7 @@ public class DataModelCartController {
         return ResponseEntity.ok(modelcartService.calculateTotalPriceByUsername(userId));
     }
 
+    //모델 목록 전체 조회
     @GetMapping("/{username}")
     public ResponseEntity<Cart> getCart(@PathVariable String userId) {
         return ResponseEntity.ok(modelcartService.getCartByUsername(userId));
