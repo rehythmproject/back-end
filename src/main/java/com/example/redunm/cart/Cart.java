@@ -55,7 +55,7 @@ public class Cart {
     // 장바구니에 아이템 추가
     public void addItem(DataModel dataModel) {
         for (CartItem item : items) {
-            if (item.getDataModel().getName().equals(dataModel.getName())) {
+            if (item.getDataModel().getTag().equals(dataModel.getTag())) { 
                 item.incrementQuantity();
                 return;
             }
@@ -63,9 +63,18 @@ public class Cart {
         items.add(new CartItem(dataModel));
     }
 
-    // 장바구니에서 아이템 제거 (name 기준)
-    public void removeItemByTag(String name) {
-        items.removeIf(item -> item.getDataModel().getName().equals(name));
+
+    // 장바구니에서 아이템 제거 오류 고침
+    public void removeItemByTag(String tag) {
+        System.out.println("Before removal: " + items);
+        items.removeIf(item -> {
+            boolean toRemove = item.getDataModel().getTag().equals(tag);
+            if (toRemove) {
+                System.out.println("Removing item with tag: " + tag);
+            }
+            return toRemove;
+        });
+        System.out.println("After removal: " + items);
     }
 
     // 장바구니의 총합 금액 계산

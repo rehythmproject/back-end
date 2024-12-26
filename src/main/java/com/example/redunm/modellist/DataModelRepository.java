@@ -7,5 +7,6 @@ import java.util.Optional;
 
 @Repository
 public interface DataModelRepository extends MongoRepository<DataModel, String> {
-    Optional<DataModel> findByTag(String name);
+    Optional<DataModel> findByName(String name);
+    Optional<DataModel> findByTag(String tag);
 }
