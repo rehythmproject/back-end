@@ -1,7 +1,8 @@
 package com.example.redunm.modellist;
 
-import com.example.redunm.modellist.ModelCartService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,66 +15,74 @@ public class DataModelCartController {
     private DataModelRepository dataModelRepository;
 
     @Autowired
-    private ModelCartService cartService;  // 새로 만든 CartService
+    private ModelCartService cartService;
 
-    // 1) DataModel 기본 CRUD
     @GetMapping
     public List<DataModel> getAll() {
         return dataModelRepository.findAll();
     }
 
     @GetMapping("/{id}")
-    public DataModel getById(@PathVariable String id) {
-        return dataModelRepository.findById(id).orElse(null);
+    public ResponseEntity<DataModel> getById(@PathVariable String id) {
+        return dataModelRepository.findById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).body(null));
     }
 
     @PostMapping
-    public DataModel create(@RequestBody DataModel model) {
-        return dataModelRepository.save(model);
+    public ResponseEntity<DataModel> create(@RequestBody DataModel model) {
+        DataModel savedModel = dataModelRepository.save(model);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedModel);
     }
 
     @PutMapping("/{id}")
-    public DataModel update(@PathVariable String id, @RequestBody DataModel model) {
+    public ResponseEntity<DataModel> update(@PathVariable String id, @RequestBody DataModel model) {
+        if (!dataModelRepository.existsById(id)) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
         model.setId(id);
-        return dataModelRepository.save(model);
+        DataModel updatedModel = dataModelRepository.save(model);
+        return ResponseEntity.ok(updatedModel);
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable String id) {
+    public ResponseEntity<Void> delete(@PathVariable String id) {
+        if (!dataModelRepository.existsById(id)) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
         dataModelRepository.deleteById(id);
+        return ResponseEntity.noContent().build();
     }
 
-    // 2) 장바구니 관련 API
+    // 장바구니 관련 API
     @PostMapping("/cart/{userId}/{modelId}")
-    public List<DataModel> addToCart(@PathVariable String userId,
-                                     @PathVariable String modelId) {
-        // DB에서 modelId로 DataModel 조회
+    public ResponseEntity<List<DataModel>> addToCart(@PathVariable String userId,
+                                                     @PathVariable String modelId) {
         DataModel foundModel = dataModelRepository.findById(modelId).orElse(null);
         if (foundModel == null) {
-            // 없는 모델이면 빈 목록 반환
-            return List.of();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(List.of());
         }
 
-        // CartService를 통해 장바구니에 추가
-        return cartService.addToCart(userId, foundModel);
+        List<DataModel> updatedCart = cartService.addToCart(userId, foundModel);
+        return ResponseEntity.ok(updatedCart);
     }
 
-    // (B) 특정 사용자의 장바구니 조회
     @GetMapping("/cart/{userId}")
-    public List<DataModel> getCart(@PathVariable String userId) {
-        return cartService.getCart(userId);
+    public ResponseEntity<List<DataModel>> getCart(@PathVariable String userId) {
+        List<DataModel> cartItems = cartService.getCart(userId);
+        return ResponseEntity.ok(cartItems);
     }
 
-    // (C) 장바구니 전체 비우기 (옵션)
     @DeleteMapping("/cart/{userId}")
-    public void clearCart(@PathVariable String userId) {
+    public ResponseEntity<Void> clearCart(@PathVariable String userId) {
         cartService.clearCart(userId);
+        return ResponseEntity.noContent().build();
     }
 
-    // (D) 장바구니에서 특정 모델 제거 (옵션)
     @DeleteMapping("/cart/{userId}/{modelId}")
-    public List<DataModel> removeModelFromCart(@PathVariable String userId,
-                                               @PathVariable String modelId) {
-        return cartService.removeModel(userId, modelId);
+    public ResponseEntity<List<DataModel>> removeModelFromCart(@PathVariable String userId,
+                                                               @PathVariable String modelId) {
+        List<DataModel> updatedCart = cartService.removeModel(userId, modelId);
+        return ResponseEntity.ok(updatedCart);
     }
 }

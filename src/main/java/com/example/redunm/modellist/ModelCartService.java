@@ -1,68 +1,58 @@
 package com.example.redunm.modellist;
 
-import com.example.redunm.modellist.DataModel;
+import com.example.redunm.entity.Cart;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
-/**
- * 사용자별 장바구니(Cart)를
- * 서버 메모리 내부의 Map에 저장해두는 임시 서비스
- */
 @Service
 public class ModelCartService {
 
-    /**
-     * 사용자별 장바구니 목록을 저장할 Map
-     * key: 사용자 ID (문자열)
-     * value: 해당 사용자가 장바구니에 담은 DataModel 리스트
-     *
-     * - ConcurrentHashMap: 멀티쓰레드 환경에서 안전성 보장(간단 예시)
-     * - 실무에서는 Redis나 DB에 저장하는 방식을 권장
-     */
-    private final Map<String, List<DataModel>> userCartMap = new ConcurrentHashMap<>();
+    @Autowired
+    private CartRepository cartRepository;
 
-    /**
-     * 특정 사용자(userId)의 장바구니 목록 조회
-     */
-    public List<DataModel> getCart(String userId) {
-        return userCartMap.getOrDefault(userId, Collections.emptyList());
-    }
+    @Autowired
+    private DataModelRepository dataModelRepository;
 
-    /**
-     * 장바구니에 모델 추가
-     * @return 추가 후의 장바구니 전체 목록
-     */
+    //장바구니 아이템 추가
     public List<DataModel> addToCart(String userId, DataModel model) {
-        // userId가 가진 장바구니 목록 가져오기 (없으면 새 리스트)
-        List<DataModel> cartList = userCartMap.getOrDefault(userId, new ArrayList<>());
-        cartList.add(model);
+        Cart cart = cartRepository.findByUserId(userId)
+                .orElse(new Cart(userId));
 
-        // 갱신된 목록을 다시 put
-        userCartMap.put(userId, cartList);
+        cart.getItems().add(model);
+        cartRepository.save(cart);
 
-        return cartList;
+        return cart.getItems();
     }
 
-    /**
-     * 장바구니 전체 삭제 (옵션)
-     */
+    //특정 사용자 장바구니 목록 조회
+    public List<DataModel> getCart(String userId) {
+        return cartRepository.findByUserId(userId)
+                .map(Cart::getItems)
+                .orElse(Collections.emptyList());
+    }
+
+    //장바구니 전체 비우기
     public void clearCart(String userId) {
-        userCartMap.remove(userId);
+        Optional<Cart> optionalCart = cartRepository.findByUserId(userId);
+        if (optionalCart.isPresent()) {
+            Cart cart = optionalCart.get();
+            cart.getItems().clear();
+            cartRepository.save(cart);
+        }
     }
 
-    /**
-     * 장바구니에서 특정 모델 삭제 (옵션)
-     */
+ //장바구니에서 특정모델 제거
     public List<DataModel> removeModel(String userId, String modelId) {
-        List<DataModel> cartList = userCartMap.get(userId);
-        if (cartList == null) {
-            return Collections.emptyList();
-        }
-
-        cartList.removeIf(m -> m.getId().equals(modelId));
-        userCartMap.put(userId, cartList);
-        return cartList;
+        return cartRepository.findByUserId(userId)
+                .map(cart -> {
+                    cart.getItems().removeIf(item -> item.getId().equals(modelId));
+                    cartRepository.save(cart);
+                    return cart.getItems();
+                })
+                .orElse(Collections.emptyList());
     }
 }

@@ -28,6 +28,7 @@ public class SecurityConfig {
                                 "/api/auth/signup/**",  // 회원가입
                                 "/api/auth/login/**",   // 로그인
                                 "/auth/signup/**",      // 추가적인 회원가입 경로
+                                "/api/data-models/**",
                                 "/css/**",
                                 "/js/**",
                                 "/models/**"
