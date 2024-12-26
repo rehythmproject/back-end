@@ -13,7 +13,7 @@ public class Cart {
     @Id
     private String id;
     private String userId;
-    private List<DataModel> items;
+    private List<CartItem> items;
 
     public Cart() {
         this.items = new ArrayList<>();
@@ -40,37 +40,44 @@ public class Cart {
         this.userId = userId;
     }
 
-    public List<DataModel> getItems() {
+    public List<CartItem> getItems() {
         return items;
     }
 
-    public void setItems(List<DataModel> items) {
+    public void setItems(List<CartItem> items) {
         this.items = items;
     }
 
-    // equals 및 hashCode 메서드
+    public void addItem(DataModel dataModel) {
+        for (CartItem item : items) {
+            if (item.getDataModel().getId().equals(dataModel.getId())) {
+                item.incrementQuantity();
+                return;
+            }
+        }
+        items.add(new CartItem(dataModel));
+    }
+
+    public void removeItem(String modelId) {
+        items.removeIf(item -> item.getDataModel().getId().equals(modelId));
+    }
+
+    public double calculateTotalPrice() {
+        return items.stream()
+                .mapToDouble(item -> item.getDataModel().getPrice() * item.getQuantity())
+                .sum();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
         Cart cart = (Cart) o;
-
         return Objects.equals(userId, cart.userId);
     }
 
     @Override
     public int hashCode() {
-        return userId != null ? userId.hashCode() : 0;
-    }
-
-    // toString 메서드
-    @Override
-    public String toString() {
-        return "Cart{" +
-                "id='" + id + '\'' +
-                ", userId='" + userId + '\'' +
-                ", items=" + items +
-                '}';
+        return Objects.hash(userId);
     }
 }
