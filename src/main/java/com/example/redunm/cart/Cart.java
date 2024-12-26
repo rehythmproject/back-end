@@ -64,7 +64,7 @@ public class Cart {
     }
 
     // 장바구니에서 아이템 제거 (name 기준)
-    public void removeItemByName(String name) {
+    public void removeItemByTag(String name) {
         items.removeIf(item -> item.getDataModel().getName().equals(name));
     }
 

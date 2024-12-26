@@ -9,29 +9,29 @@ import org.springframework.web.bind.annotation.*;
 public class DataModelCartController {
 
     @Autowired
-    private ModelCartService modelcartService;
+    private ModelCartService modelCartService;
 
-    @PostMapping("/{username}/add/{name}")
-    public ResponseEntity<Cart> addToCart(@PathVariable String userId, @PathVariable String modelId) {
-        return ResponseEntity.ok(modelcartService.addToCartByUsernameAndModelName(userId, modelId));
+    // + 버튼 클릭 시 모델 추가
+    @PostMapping("/{username}/add/{tag}")
+    public ResponseEntity<Cart> addToCart(@PathVariable String username, @PathVariable String tag) {
+        return ResponseEntity.ok(modelCartService.addToCartByUsernameAndTag(username, tag));
     }
 
-    @DeleteMapping("/{username}/remove/{name}")
-    public ResponseEntity<Cart> removeItem(@PathVariable String userId, @PathVariable String modelId) {
-        return ResponseEntity.ok(modelcartService.removeItemByUsernameAndModelName(userId, modelId));
+    // - 버튼 클릭 시 모델 제거
+    @DeleteMapping("/{username}/remove/{tag}")
+    public ResponseEntity<Cart> removeItem(@PathVariable String username, @PathVariable String tag) {
+        return ResponseEntity.ok(modelCartService.removeItemByUsernameAndTag(username, tag));
     }
 
-    //합계 총금액
-    @GetMapping("/{username}/total")
-    public ResponseEntity<Double> calculateTotal(@PathVariable String userId) {
-        return ResponseEntity.ok(modelcartService.calculateTotalPriceByUsername(userId));
-    }
-
-    //모델 목록 전체 조회
+    // 장바구니 조회
     @GetMapping("/{username}")
-    public ResponseEntity<Cart> getCart(@PathVariable String userId) {
-        return ResponseEntity.ok(modelcartService.getCartByUsername(userId));
+    public ResponseEntity<Cart> getCart(@PathVariable String username) {
+        return ResponseEntity.ok(modelCartService.getCartByUsername(username));
     }
 
+    // 장바구니의 총 금액 계산
+    @GetMapping("/{username}/total")
+    public ResponseEntity<Double> calculateTotal(@PathVariable String username) {
+        return ResponseEntity.ok(modelCartService.calculateTotalPriceByUsername(username));
+    }
 }
-

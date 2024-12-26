@@ -11,13 +11,15 @@ public class DataModel {
     private String name;
     private String tag;
     private int price;
+    private String description;
 
     public DataModel() {}
 
-    public DataModel(String name, String tag, int price) {
+    public DataModel(String name, String tag, int price, String description) {
         this.name = name;
         this.tag = tag;
         this.price = price;
+        this.description = description;
     }
 
     // Getters and Setters
@@ -51,5 +53,11 @@ public class DataModel {
 
     public void setPrice(int price) {
         this.price = price;
+    }
+    public String getDescription() {
+        return description;
+    }
+    public void setDescription(String description) {
+        this.description = description;
     }
 }
