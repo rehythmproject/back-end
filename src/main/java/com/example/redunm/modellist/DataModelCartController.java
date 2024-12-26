@@ -12,25 +12,28 @@ import java.util.List;
 public class DataModelCartController {
 
     @Autowired
-    private ModelCartService cartService;
+    private ModelCartService modelcartService;
 
-    @PostMapping("/{userId}/{modelId}")
+    @PostMapping("/{username}/add/{name}")
     public ResponseEntity<Cart> addToCart(@PathVariable String userId, @PathVariable String modelId) {
-        return ResponseEntity.ok(cartService.addToCart(userId, modelId));
+        return ResponseEntity.ok(modelcartService.addToCartByUsernameAndModelName(userId, modelId));
     }
 
-    @DeleteMapping("/{userId}/{modelId}")
+    @DeleteMapping("/{username}/remove/{name}")
     public ResponseEntity<Cart> removeItem(@PathVariable String userId, @PathVariable String modelId) {
-        return ResponseEntity.ok(cartService.removeItem(userId, modelId));
+        return ResponseEntity.ok(modelcartService.removeItemByUsernameAndModelName(userId, modelId));
     }
 
-    @GetMapping("/{userId}/total")
+    //합계 총금액
+    @GetMapping("/{username}/total")
     public ResponseEntity<Double> calculateTotal(@PathVariable String userId) {
-        return ResponseEntity.ok(cartService.calculateTotalPrice(userId));
+        return ResponseEntity.ok(modelcartService.calculateTotalPriceByUsername(userId));
     }
 
-    @GetMapping("/{userId}")
+    @GetMapping("/{username}")
     public ResponseEntity<Cart> getCart(@PathVariable String userId) {
-        return ResponseEntity.ok(cartService.getCart(userId));
+        return ResponseEntity.ok(modelcartService.getCartByUsername(userId));
     }
+
 }
+

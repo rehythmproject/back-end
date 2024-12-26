@@ -15,15 +15,18 @@ public class Cart {
     private String userId;
     private List<CartItem> items;
 
+    // 기본 생성자
     public Cart() {
         this.items = new ArrayList<>();
     }
 
+    // 사용자 ID를 포함하는 생성자
     public Cart(String userId) {
         this.userId = userId;
         this.items = new ArrayList<>();
     }
 
+    // Getter 및 Setter
     public String getId() {
         return id;
     }
@@ -48,9 +51,10 @@ public class Cart {
         this.items = items;
     }
 
+    // 장바구니에 아이템 추가
     public void addItem(DataModel dataModel) {
         for (CartItem item : items) {
-            if (item.getDataModel().getId().equals(dataModel.getId())) {
+            if (item.getDataModel().getName().equals(dataModel.getName())) {
                 item.incrementQuantity();
                 return;
             }
@@ -58,16 +62,19 @@ public class Cart {
         items.add(new CartItem(dataModel));
     }
 
-    public void removeItem(String modelId) {
-        items.removeIf(item -> item.getDataModel().getId().equals(modelId));
+    // 장바구니에서 아이템 제거 (name 기준)
+    public void removeItemByName(String name) {
+        items.removeIf(item -> item.getDataModel().getName().equals(name));
     }
 
+    // 장바구니의 총합 금액 계산
     public double calculateTotalPrice() {
         return items.stream()
                 .mapToDouble(item -> item.getDataModel().getPrice() * item.getQuantity())
                 .sum();
     }
 
+    // equals 및 hashCode
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -79,5 +86,15 @@ public class Cart {
     @Override
     public int hashCode() {
         return Objects.hash(userId);
+    }
+
+    // toString
+    @Override
+    public String toString() {
+        return "Cart{" +
+                "id='" + id + '\'' +
+                ", userId='" + userId + '\'' +
+                ", items=" + items +
+                '}';
     }
 }
