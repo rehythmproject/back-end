@@ -1,4 +1,4 @@
-package com.example.redunm.entity;
+package com.example.redunm.cart;
 
 import com.example.redunm.modellist.DataModel;
 import org.springframework.data.annotation.Id;
@@ -7,12 +7,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+
 @Document(collection = "cart")
 public class Cart {
 
     @Id
     private String id;
-    private String userId;
+    private String username; // 기존 userId -> username으로 변경
     private List<CartItem> items;
 
     // 기본 생성자
@@ -20,9 +21,9 @@ public class Cart {
         this.items = new ArrayList<>();
     }
 
-    // 사용자 ID를 포함하는 생성자
-    public Cart(String userId) {
-        this.userId = userId;
+    // username을 포함하는 생성자
+    public Cart(String username) {
+        this.username = username;
         this.items = new ArrayList<>();
     }
 
@@ -35,12 +36,12 @@ public class Cart {
         this.id = id;
     }
 
-    public String getUserId() {
-        return userId;
+    public String getUsername() {
+        return username; // userId -> username 변경
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setUsername(String username) { // userId -> username 변경
+        this.username = username;
     }
 
     public List<CartItem> getItems() {
@@ -80,12 +81,12 @@ public class Cart {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Cart cart = (Cart) o;
-        return Objects.equals(userId, cart.userId);
+        return Objects.equals(username, cart.username); // userId -> username 변경
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(userId);
+        return Objects.hash(username); // userId -> username 변경
     }
 
     // toString
@@ -93,7 +94,7 @@ public class Cart {
     public String toString() {
         return "Cart{" +
                 "id='" + id + '\'' +
-                ", userId='" + userId + '\'' +
+                ", username='" + username + '\'' +
                 ", items=" + items +
                 '}';
     }

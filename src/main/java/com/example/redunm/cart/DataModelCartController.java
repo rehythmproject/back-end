@@ -1,11 +1,8 @@
-package com.example.redunm.modellist;
+package com.example.redunm.cart;
 
-import com.example.redunm.entity.Cart;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/cart")

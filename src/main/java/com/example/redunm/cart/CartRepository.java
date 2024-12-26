@@ -1,6 +1,5 @@
-package com.example.redunm.modellist;
+package com.example.redunm.cart;
 
-import com.example.redunm.entity.Cart;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 

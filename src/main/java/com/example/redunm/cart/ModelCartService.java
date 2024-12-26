@@ -1,12 +1,9 @@
-package com.example.redunm.modellist;
+package com.example.redunm.cart;
 
-import com.example.redunm.entity.Cart;
+import com.example.redunm.modellist.DataModel;
+import com.example.redunm.modellist.DataModelRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ModelCartService {
