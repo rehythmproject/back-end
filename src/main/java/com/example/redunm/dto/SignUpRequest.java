@@ -23,8 +23,6 @@ public class SignUpRequest {
     @NotBlank(message = "Phone number is mandatory")
     private String phone;
 
-    // Getters and Setters
-
     public String getUsername() {
         return username;
     }
