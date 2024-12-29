@@ -1,58 +1,69 @@
 package com.example.redunm.config;
 
+import com.example.redunm.filter.JsonAuthenticationFilter;
+import com.example.redunm.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfig {
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .csrf(AbstractHttpConfigurer::disable)  // CSRF 비활성화
-                .cors(Customizer.withDefaults())        // 기본 CORS 설정
+    private final UserService userService;
 
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(
-                                "/api/auth/signup/**",  // 회원가입 관련 요청 허용
-                                "/api/auth/login/**",   // 로그인 관련 요청 허용
-                                "/api/cart/**",         // 장바구니 API 요청 허용
-                                "/api/data-models/**",  // 데이터 모델 API 요청 허용
-                                "/css/**",             // 정적 리소스 허용
-                                "/js/**",
-                                "/models/**"
-                        ).permitAll()
-                        .anyRequest().authenticated()  // 그 외의 요청은 인증 필요
-                )
-
-                .formLogin(form -> form
-                        .loginPage("/login")             // 커스텀 로그인 페이지
-                        .loginProcessingUrl("/api/auth/login") // 로그인 요청 URL
-                        .defaultSuccessUrl("/home", true) // 로그인 성공 후 이동 URL
-                        .permitAll()
-                )
-
-                .logout(logout -> logout
-                        .logoutUrl("/api/auth/logout")   // 로그아웃 URL
-                        .logoutSuccessUrl("/")           // 로그아웃 성공 후 이동 URL
-                        .permitAll()
-                );
-
-        return http.build();
+    @Autowired
+    public SecurityConfig(UserService userService) {
+        this.userService = userService;
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
+    }
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, AuthenticationManager authManager) throws Exception {
+        http
+                .csrf(csrf -> csrf.disable()) // CSRF 비활성화
+                .cors(Customizer.withDefaults())
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                )
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(
+                                "/api/auth/signup/**",
+                                "/api/auth/login/**",
+                                "/api/cart/**",
+                                "/api/data-models/**",
+                                "/css/**",
+                                "/js/**",
+                                "/models/**"
+                        ).permitAll()
+                        .anyRequest().authenticated()
+                )
+                .logout(logout -> logout
+                        .logoutUrl("/api/auth/logout")
+                        .logoutSuccessUrl("/")
+                        .permitAll()
+                )
+                .formLogin(form -> form.disable());
+
+        JsonAuthenticationFilter jsonAuthenticationFilter = new JsonAuthenticationFilter("/api/auth/login", authManager, userService);
+        http.addFilterBefore(jsonAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+
+        return http.build();
     }
 }

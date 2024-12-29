@@ -13,17 +13,17 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/auth/signup")
-public class SignUpController {
+@RequestMapping("/api/auth")
+public class AuthController {
 
     private final UserService userService;
 
     @Autowired
-    public SignUpController(UserService userService) {
+    public AuthController(UserService userService) {
         this.userService = userService;
     }
 
-    @PostMapping
+    @PostMapping("/signup")
     public ResponseEntity<?> signup(@Valid @RequestBody SignUpRequest signUpRequest) {
         if (!signUpRequest.getPassword().equals(signUpRequest.getConfirmPassword())) {
             return ResponseEntity
@@ -51,7 +51,7 @@ public class SignUpController {
 
         User user = new User();
         user.setUsername(signUpRequest.getUsername());
-        user.setPassword(signUpRequest.getPassword());
+        user.setPassword(signUpRequest.getPassword()); // PasswordEncoder는 UserService.save()에서 처리됨
         user.setEmail(signUpRequest.getEmail());
         user.setPhone(signUpRequest.getPhone());
 
@@ -63,10 +63,12 @@ public class SignUpController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/success")
-    public ResponseEntity<?> success() {
+    // 로그아웃 엔드포인트 (Spring Security에서 처리)
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout() {
+        // 로그아웃은 SecurityConfig에서 처리되므로, 별도의 로직이 필요 없습니다.
         Map<String, String> response = new HashMap<>();
-        response.put("message", "회원가입이 성공적으로 완료되었습니다.");
+        response.put("message", "로그아웃이 성공적으로 완료되었습니다.");
         return ResponseEntity.ok(response);
     }
 }

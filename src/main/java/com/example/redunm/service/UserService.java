@@ -3,13 +3,14 @@ package com.example.redunm.service;
 import com.example.redunm.entity.User;
 import com.example.redunm.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
 @Service
-public class UserService {
+public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -38,15 +39,14 @@ public class UserService {
     }
 
     public boolean isDuplicate(User user) {
-        if (findByUsername(user.getUsername()).isPresent()) {
-            return true;
-        }
-        if (findByEmail(user.getEmail()).isPresent()) {
-            return true;
-        }
-        if (findByPhone(user.getPhone()).isPresent()) {
-            return true;
-        }
-        return false;
+        return findByUsername(user.getUsername()).isPresent()
+                || findByEmail(user.getEmail()).isPresent()
+                || findByPhone(user.getPhone()).isPresent();
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다."));
     }
 }
