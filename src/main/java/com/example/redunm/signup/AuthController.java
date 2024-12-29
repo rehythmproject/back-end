@@ -23,7 +23,6 @@ public class AuthController {
         this.userService = userService;
     }
 
-    // 회원가입 엔드포인트
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@Valid @RequestBody SignUpRequest signUpRequest) {
         if (!signUpRequest.getPassword().equals(signUpRequest.getConfirmPassword())) {
