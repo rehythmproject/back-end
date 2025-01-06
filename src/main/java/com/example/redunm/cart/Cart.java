@@ -13,7 +13,7 @@ public class Cart {
 
     @Id
     private String id;
-    private String username; // 기존 userId -> username으로 변경
+    private String username;
     private List<CartItem> items;
 
     // 기본 생성자
@@ -37,10 +37,10 @@ public class Cart {
     }
 
     public String getUsername() {
-        return username; // userId -> username 변경
+        return username;
     }
 
-    public void setUsername(String username) { // userId -> username 변경
+    public void setUsername(String username) {
         this.username = username;
     }
 
